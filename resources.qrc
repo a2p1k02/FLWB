@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/app/icon">
+        <file>src/FLWB/icon/FLWB.svg</file>
+    </qresource>
+</RCC>

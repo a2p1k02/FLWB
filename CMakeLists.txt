@@ -24,10 +24,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets LinguistTools WebEngineWidgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets LinguistTools WebEngineWidgets REQUIRED)
 
 set(TS_FILES FLWB_en_US.ts)
+
+qt5_add_resources(FLWB_RESOURCES resources.qrc)
 
 set(PROJECT_SOURCES
         src/main.cpp
@@ -41,6 +43,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FLWB
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${FLWB_RESOURCES}
     )
 
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
@@ -52,13 +55,18 @@ else()
     else()
         add_executable(FLWB
             ${PROJECT_SOURCES}
+            ${FLWB_RESOURCES}
         )
     endif()
 
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(FLWB PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(FLWB PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+)
 
 set_target_properties(FLWB PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
