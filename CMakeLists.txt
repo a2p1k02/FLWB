@@ -36,6 +36,8 @@ set(PROJECT_SOURCES
         src/FLWB/mainwindow.cpp
         src/FLWB/mainwindow.h
         src/FLWB/mainwindow.ui
+        src/FLWB/history.h
+        src/FLWB/history.cpp
         ${TS_FILES}
 )
 

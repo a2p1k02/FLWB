@@ -1,12 +1,10 @@
-#include <QMessageBox>
-#include <QKeyEvent>
-
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    mHistory = new History(this);
     setDefaultUI();
     startPage();
 }
@@ -19,10 +17,10 @@ MainWindow::~MainWindow()
 void MainWindow::setDefaultUI()
 {
     ui->menubar->hide();
-    ui->backButton->setIcon(style.standardIcon(QStyle::SP_ArrowBack));
-    ui->forwardButton->setIcon(style.standardIcon(QStyle::SP_ArrowForward));
-    ui->refreshButton->setIcon(style.standardIcon(QStyle::SP_BrowserReload));
-    ui->goButton->setIcon(style.standardIcon(QStyle::SP_DialogApplyButton));
+    ui->backButton->setIcon(mStyle.standardIcon(QStyle::SP_ArrowBack));
+    ui->forwardButton->setIcon(mStyle.standardIcon(QStyle::SP_ArrowForward));
+    ui->refreshButton->setIcon(mStyle.standardIcon(QStyle::SP_BrowserReload));
+    ui->goButton->setIcon(mStyle.standardIcon(QStyle::SP_DialogApplyButton));
 }
 
 void MainWindow::startPage()
@@ -33,6 +31,9 @@ void MainWindow::startPage()
 void MainWindow::on_goButton_clicked()
 {
     ui->webBroswer->load(ui->searchBox->text());
+
+    mNewHistory.insert(QDateTime().currentDateTime().toString("dd.MM.yyyy hh:mm:ss"), ui->searchBox->text());
+    mHistory->writeHistory(mNewHistory);
 }
 
 void MainWindow::on_searchBox_returnPressed()
@@ -46,13 +47,9 @@ void MainWindow::on_webBroswer_loadStarted()
 }
 
 void MainWindow::on_webBroswer_loadFinished(bool arg1)
-{
-    if (arg1) {
-        ui->statusBar->showMessage("Finished!");
-        ui->searchBox->setText(ui->webBroswer->url().toString());
-    } else {
-        ui->statusBar->showMessage("Load error");
-    }
+{    
+    arg1 ? ui->statusBar->showMessage("Finished!"),
+            ui->searchBox->setText(ui->webBroswer->url().toString()) : ui->statusBar->showMessage("Load error");
 }
 
 void MainWindow::keyPressEvent(QKeyEvent* event)
